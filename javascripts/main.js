@@ -8,13 +8,14 @@ Oidc.Log.level = Oidc.Log.INFO;
 //
 const ONELOGIN_CLIENT_ID = 'b2afa500-5a9e-0139-e6b4-0668c6da8869185719';
 const ONELOGIN_SUBDOMAIN = 'the-irc-dev';
-debugger;
+
 var settings = {
     authority: 'https://' + ONELOGIN_SUBDOMAIN + '.onelogin.com/oidc/2',
     client_id: ONELOGIN_CLIENT_ID,
-    redirect_uri: `${window.location.href}oauth/callback`,
-    response_type: 'code',
+    redirect_uri: window.location.origin,
+    response_type: 'id_token token',
     scope: 'openid profile',
+
     filterProtocolClaims: true,
     loadUserInfo: true
 };
@@ -38,16 +39,13 @@ function redirectToLogin(e) {
 // by OneLogin after the user has attempted to authenticate
 //
 function processLoginResponse() {
-  mgr.signinRedirectCallback().then(function(user, bb) {
+  mgr.signinRedirectCallback().then(function(user) {
       console.log("signed in", user);
-
-      // Tokens are stored in User Manager.
-      // You can access them elsewhere in code using mgr.getUser() to fetch the user object
 
       document.getElementById("loginResult").innerHTML = '<h3>Success</h3><pre><code>' + JSON.stringify(user, null, 2) + '</code></pre>'
 
   }).catch(function(err) {
-      console.log('Error completing auth code + pkce flow', err);
+      console.log(err);
   });
 }
 
@@ -55,6 +53,6 @@ function processLoginResponse() {
 // Look out for a authentication response
 // then log it and handle it
 //
-if (window.location.href.indexOf("?") >= 0) {
+if (window.location.href.indexOf("#") >= 0) {
   processLoginResponse();
 }
