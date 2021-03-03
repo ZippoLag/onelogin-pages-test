@@ -12,7 +12,7 @@ const ONELOGIN_SUBDOMAIN = 'the-irc-dev';
 var settings = {
     authority: 'https://' + ONELOGIN_SUBDOMAIN + '.onelogin.com/oidc/2',
     client_id: ONELOGIN_CLIENT_ID,
-    redirect_uri: window.location.origin,
+    redirect_uri: window.location.href,
     response_type: 'id_token token',
     scope: 'openid profile',
 
