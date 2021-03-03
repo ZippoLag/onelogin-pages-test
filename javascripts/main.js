@@ -45,7 +45,8 @@ function processLoginResponse() {
       document.getElementById("loginResult").innerHTML = '<h3>Success</h3><pre><code>' + JSON.stringify(user, null, 2) + '</code></pre>'
 
   }).catch(function(err) {
-      console.log(err);
+    console.log(err);
+    document.getElementById("error").innerHTML = '<h3>Error</h3><pre><code>' + err + '</code></pre>'
   });
 }
 
