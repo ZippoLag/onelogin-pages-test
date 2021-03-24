@@ -21,7 +21,8 @@ var mgr = new Oidc.UserManager(settings);
 
 mgr.getUser().then((user) => {
   if (user) {
-    document.getElementById("user").innerHTML = user.profile.email;
+    document.getElementById("user").innerHTML = `${user.profile.email} <a id="logout" href="" class="btn">LOGOUT</a>`;
+    document.getElementById("logout").addEventListener("click", ()=>{mgr.removeUser();});
   } else {
     document
       .getElementById("login")
@@ -57,9 +58,6 @@ mgr.getUser().then((user) => {
             "<h3>Success</h3><pre><code>" +
             JSON.stringify(user, null, 2) +
             "</code></pre>";
-
-          mgr.storeUser(user);
-          debugger;
         })
         .catch(function (err) {
           console.log(err);
