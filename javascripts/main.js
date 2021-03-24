@@ -1,9 +1,7 @@
+//OIDC Client Configuration
 Oidc.Log.logger = console;
 Oidc.Log.level = Oidc.Log.INFO;
 
-//
-// OIDC Client Configuration
-//
 const ONELOGIN_CLIENT_ID = "b2afa500-5a9e-0139-e6b4-0668c6da8869185719";
 const ONELOGIN_SUBDOMAIN = "the-irc-dev";
 
@@ -19,57 +17,61 @@ var settings = {
 };
 var mgr = new Oidc.UserManager(settings);
 
-mgr.getUser().then((user) => {
-  if (user) {
-    document.getElementById("user").innerHTML = `${user.profile.email} <a id="logout" href="" class="btn">LOGOUT</a>`;
-    document.getElementById("logout").addEventListener("click", ()=>{mgr.removeUser();});
-  } else {
-    document
+//Helper functions
+//Function to redirect page into OneLogin site for external auth
+const redirectToLogin = (e) => {
+  e.preventDefault();
+
+  mgr
+    .signinRedirect()
+    .then(function () {
+      console.log("signinRedirect done");
+    })
+    .catch(function (err) {
+      console.log(err);
+    });
+}
+
+//Function for handling the redirection when OneLogin has finished authenticating the user
+const processLoginResponse = () => {
+  mgr
+    .signinRedirectCallback()
+    .then(function (user) {
+      console.log("signed in", user);
+
+      displayAuthenticatedUser(user);
+    })
+    .catch(function (err) {
+      console.log(err);
+      document.getElementById("error").innerHTML =
+        `<h3>Error</h3><pre><code>${err}</code></pre>`;
+    });
+
+    //Finally we remove the query string to clean up the current URL
+    //window.location.href = window.location.href.split("#")[0];
+}
+
+//Setting-up logic for the login button
+const constructLoginUI = () => {
+  document
       .getElementById("login")
       .addEventListener("click", redirectToLogin, false);
+};
 
-    //
-    // Redirect to OneLogin to authenticate the user
-    //
-    function redirectToLogin(e) {
-      e.preventDefault();
+//Setting-up logic for displaying the logged-in user's email and a logout button
+const displayAuthenticatedUser = (user) => {
+  document.getElementById("user").innerHTML = `${user.profile.email} <a id="logout" href="" class="btn">LOGOUT</a>`;
+    document.getElementById("logout").addEventListener("click", ()=>{mgr.removeUser();});
+};
 
-      mgr
-        .signinRedirect({ state: "some data" })
-        .then(function () {
-          console.log("signinRedirect done");
-        })
-        .catch(function (err) {
-          console.log(err);
-        });
-    }
+//Main logic
+mgr.getUser().then((user) => {
+  if (user) {
+    displayAuthenticatedUser(user);
+  } else {
+    constructLoginUI();
 
-    //
-    // Handle the authentication response returned
-    // by OneLogin after the user has attempted to authenticate
-    //
-    function processLoginResponse() {
-      mgr
-        .signinRedirectCallback()
-        .then(function (user) {
-          console.log("signed in", user);
-
-          document.getElementById("loginResult").innerHTML =
-            "<h3>Success</h3><pre><code>" +
-            JSON.stringify(user, null, 2) +
-            "</code></pre>";
-        })
-        .catch(function (err) {
-          console.log(err);
-          document.getElementById("error").innerHTML =
-            "<h3>Error</h3><pre><code>" + err + "</code></pre>";
-        });
-    }
-
-    //
-    // Look out for a authentication response
-    // then log it and handle it
-    //
+    //If there's a querystring with login details in the URL, then we've just came back from OneLogin and are authenticated, so we need to extract the user details from there
     if (window.location.href.indexOf("#") >= 0) {
       processLoginResponse();
     }
