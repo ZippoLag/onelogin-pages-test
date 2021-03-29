@@ -75,24 +75,17 @@ const displayAuthenticatedUser = (user) => {
 };
 
 const renderPage = (url) => {
-  var request = new XMLHttpRequest();
+  document.getElementById("content").innerHTML = `<iframe id="iframe-site" src="${url}" style='width: 100%; height: 100%; border: none; overflow: hidden;'></iframe>`;
 
-  request.addEventListener("load", function(evt){
-      document.getElementById("content").innerHTML = `<iframe id="iframe-site" src="${url}" style='width: 100%; height: 100%; border: none; overflow: hidden;'></iframe>`;
+  var frame = document.getElementById('iframe-site');
+  frame.contentWindow.onhashchange = function(e){
+    let baseUrl = window.location.href.split('?innerUrl=')[0];
+    let newUrl = baseUrl + '?innerUrl=' + frame.contentWindow.location.href.split(baseUrl)[1];
 
-      var frame = document.getElementById('iframe-site');
-      frame.contentWindow.onhashchange = function(e){
-        let baseUrl = window.location.href.split('?innerUrl=')[0];
-        let newUrl = baseUrl + '?innerUrl=' + frame.contentWindow.location.href.split(baseUrl)[1];
-
-        if(window.location.href !== newUrl){
-          window.location.href = newUrl;
-        }
-      };
-  }, false);
-
-  request.open('GET', url, true),
-  request.send();
+    if(window.location.href !== newUrl){
+      window.location.href = newUrl;
+    }
+  };
 };
 
 //Main logic
