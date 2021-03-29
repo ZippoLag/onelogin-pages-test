@@ -7,7 +7,7 @@ Oidc.Log.level = Oidc.Log.INFO;
 
 //TODO: handle with config files
 //http://localhost:5000 - "63903120-6f09-0139-86c4-0a1faab64165185719"
-//https://github.com/ZippoLag/onelogin-pages-test - "b2afa500-5a9e-0139-e6b4-0668c6da8869185719"
+//https://zippolag.github.io/onelogin-pages-test/ - "b2afa500-5a9e-0139-e6b4-0668c6da8869185719"
 
 const ONELOGIN_CLIENT_ID = "63903120-6f09-0139-86c4-0a1faab64165185719";
 const ONELOGIN_SUBDOMAIN = "the-irc-dev";
