@@ -1,3 +1,6 @@
+//Inner (protected) site configs:
+const BASE_INNER_SITE = "raw-site/index.htm";
+
 //OIDC Client Configuration
 Oidc.Log.logger = console;
 Oidc.Log.level = Oidc.Log.INFO;
@@ -67,16 +70,25 @@ const displayAuthenticatedUser = (user) => {
     document.getElementById("user").innerHTML = `${user.profile.email} <a id="logout" href="" class="btn">LOGOUT</a>`;
     document.getElementById("logout").addEventListener("click", ()=>{mgr.removeUser();});
 
-    renderPage("raw-site/index.htm");
+    let innerUrl = window.location.href.includes('?innerUrl=') ? window.location.href.split('?innerUrl=')[1] : BASE_INNER_SITE;
+    renderPage(innerUrl);
 };
 
 const renderPage = (url) => {
   var request = new XMLHttpRequest();
 
   request.addEventListener("load", function(evt){
-      //document.getElementById("content").innerHTML = evt.srcElement.responseText.replace('src="', 'src="raw-site/').replace('href="', 'href="raw-site/').replace('href="raw-site/#', 'href="#');
-      document.getElementById("content").innerHTML = `<iframe src="${url}" style='width: 100%; height: 100%; border: none; overflow: hidden;'></iframe>`;
-      //document.getElementById("content").innerHTML = `<object data="/raw-site/index.html" width="100%" height="100%"> <embed src="/raw-site/index.html" width="100%" height="100%"> </embed> Error: Embedded data could not be displayed. </object>`;
+      document.getElementById("content").innerHTML = `<iframe id="iframe-site" src="${url}" style='width: 100%; height: 100%; border: none; overflow: hidden;'></iframe>`;
+
+      var frame = document.getElementById('iframe-site');
+      frame.contentWindow.onhashchange = function(e){
+        let baseUrl = window.location.href.split('?innerUrl=')[0];
+        let newUrl = baseUrl + '?innerUrl=' + frame.contentWindow.location.href.split(baseUrl)[1];
+
+        if(window.location.href !== newUrl){
+          window.location.href = newUrl;
+        }
+      };
   }, false);
 
   request.open('GET', url, true),
