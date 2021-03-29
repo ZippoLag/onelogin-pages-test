@@ -1,5 +1,5 @@
 # onelogin-pages-test
-Testing if it's feasible to have a pure-frontend site with onelogin authorization working on github pages.
+Testing if it's feasible to have a pure-frontend site with onelogin authorization working on github pages. This test project was developed based on OneLogin's "Implicit Flow" example: https://github.com/onelogin/onelogin-oidc-node/tree/master/2.%20Implicit%20Flow
 
 1. You must first go to onelogin.com and create a developer account, for this you will have to provide an organization name. This organization name is used for logging into the administration site and will be needed for configuring your login code in `main.js` under `ONELOGIN_SUBDOMAIN`. As this PoC was commissioned by the IRC, I created "the-irc-dev", so my admin site is `https://the-irc-dev.onelogin.com`.
 2. After logged into the admin site in onelogin.com, go to the `Applications` section and add a new "OpenId Connect (OIDC)" application, add it's name and save it to create it. Then go to the `Configuration` tab and set the `Login Url` to "http://localhost:5000" (assuming that's where your dev server will be running, for example with `npx serve`). In that same section also add a line for "http://localhost:5000/oauth/callback", "http://localhost:5000/" and "http://localhost:5000" (all URLs should be without double quotes).
