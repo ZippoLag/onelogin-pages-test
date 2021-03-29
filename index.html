@@ -1,21 +1,21 @@
 <!DOCTYPE html>
-<html>
+<html style='width: 100%; height: 100%; overflow: hidden;'>
   <head>
     <title>Github page login sample</title>
   </head>
-  <body>
-<h2>Try it</h2>
-<p>
-  After clicking login the user will be redirect to OneLogin to
-  authenticate. Once authenticated they will be redirected back to
-  this site and their profile details will be displayed below
-</p>
-<p id="user">
-  <a href="" class="btn" id="login">LOGIN</a>
-</p>
-<div id="loginResult"></div>
-<div id="error"></div>
-<script type="text/javascript" src="javascripts/oidc-client.min.js"></script>
-<script type="text/javascript" src="javascripts/main.js"></script>
+
+  <body style='width: 100%; height: 100%; overflow: hidden;'>
+    <div style='position: absolute; width: 95%;height: 5%;display:flex;align-items:center;justify-content: flex-end;'>
+      <div id="user" style="">
+        <a href="" class="btn" id="login">LOGIN</a>
+        <div id="error"></div>
+      </div>
+    </div>
+
+    <div id="content" style='width: 99%; height: 90%; overflow: hidden;'></div>
+
+
+    <script type="text/javascript" src="javascripts/oidc-client.min.js"></script>
+    <script type="text/javascript" src="javascripts/main.js"></script>
   </body>
 </html>
