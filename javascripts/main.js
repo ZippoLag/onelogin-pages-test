@@ -1,3 +1,6 @@
+//Inner (protected) site configs:
+const BASE_INNER_SITE = "raw-site/index.htm";
+
 //OIDC Client Configuration
 Oidc.Log.logger = console;
 Oidc.Log.level = Oidc.Log.INFO;
@@ -12,7 +15,7 @@ const ONELOGIN_SUBDOMAIN = "the-irc-dev";
 var settings = {
   authority: "https://" + ONELOGIN_SUBDOMAIN + ".onelogin.com/oidc/2",
   client_id: ONELOGIN_CLIENT_ID,
-  redirect_uri: window.location.href.split("#")[0],
+  redirect_uri: window.location.href.split("#")[0].split("?")[0],
   response_type: "id_token token",
   scope: "openid profile",
 
@@ -50,9 +53,6 @@ const processLoginResponse = () => {
       document.getElementById("error").innerHTML =
         `<h3>Error</h3><pre><code>${err}</code></pre>`;
     });
-
-    //Finally we remove the query string to clean up the current URL
-    //window.location.href = window.location.href.split("#")[0];
 }
 
 //Setting-up logic for the login button
@@ -64,8 +64,30 @@ const constructLoginUI = () => {
 
 //Setting-up logic for displaying the logged-in user's email and a logout button
 const displayAuthenticatedUser = (user) => {
-  document.getElementById("user").innerHTML = `${user.profile.email} <a id="logout" href="" class="btn">LOGOUT</a>`;
-    document.getElementById("logout").addEventListener("click", ()=>{mgr.removeUser();});
+    document.getElementById("user").innerHTML = `${user.profile.email} <a id="logout" href="" class="btn">LOGOUT</a>`;
+    document.getElementById("logout").addEventListener("click", ()=>{
+      mgr.removeUser();
+      window.location.href = window.location.href.split("#")[0].split("?")[0]
+    });
+
+    let innerUrl = window.location.href.includes('?innerUrl=') ? window.location.href.split('?innerUrl=')[1] : BASE_INNER_SITE;
+    renderPage(innerUrl);
+};
+
+const renderPage = (url) => {
+  document.getElementById("content").innerHTML = `<iframe id="iframe-site" src="${url}" style='width: 100%; height: 100%; border: none; overflow: hidden;'></iframe>`;
+
+  var frame = document.getElementById('iframe-site');
+  iframeURLChange(frame, function (iFrameUrl) {
+    if(iFrameUrl){
+      let baseUrl = window.location.href.split('#')[0].split('?innerUrl=')[0];
+      let newUrl = baseUrl + '?innerUrl=' + iFrameUrl.split(baseUrl)[1];
+
+      if(window.location.href !== newUrl){
+        window.location.href = newUrl;
+      }
+    }
+});
 };
 
 //Main logic
