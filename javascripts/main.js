@@ -68,7 +68,10 @@ const constructLoginUI = () => {
 //Setting-up logic for displaying the logged-in user's email and a logout button
 const displayAuthenticatedUser = (user) => {
     document.getElementById("user").innerHTML = `${user.profile.email} <a id="logout" href="" class="btn">LOGOUT</a>`;
-    document.getElementById("logout").addEventListener("click", ()=>{mgr.removeUser();});
+    document.getElementById("logout").addEventListener("click", ()=>{
+      mgr.removeUser();
+      window.location.href = window.location.host;
+    });
 
     let innerUrl = window.location.href.includes('?innerUrl=') ? window.location.href.split('?innerUrl=')[1] : BASE_INNER_SITE;
     renderPage(innerUrl);
